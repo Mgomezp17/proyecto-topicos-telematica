@@ -85,18 +85,9 @@ class GridDFSClientExternal:
                         external_block_info["datanode_url"] = "http://localhost:8003"
                     external_block_distribution.append(external_block_info)
 
-                # Subir bloques a DataNodes
-                print("Subiendo bloques a DataNodes...")
-                success = await FileUtils.upload_blocks_to_datanodes(
-                    blocks, external_block_distribution, auth_headers
-                )
-
-                if not success:
-                    print("Error subiendo bloques")
-                    return False
-
-                # Registrar bloques en el NameNode
+                # Registrar bloques en el NameNode primero para obtener los IDs
                 print("Registrando bloques en el NameNode...")
+                block_ids = []
                 for i, (block_index, data, checksum) in enumerate(blocks):
                     datanode_url = block_distribution[i][
                         "datanode_url"
@@ -122,6 +113,20 @@ class GridDFSClientExternal:
                         print(f"Status: {response.status_code}")
                         print(f"Response: {response.text}")
                         return False
+
+                    # Obtener el ID del bloque del response
+                    block_response = response.json()
+                    block_ids.append(block_response["block_id"])
+
+                # Subir bloques a DataNodes con los IDs correctos
+                print("Subiendo bloques a DataNodes...")
+                success = await FileUtils.upload_blocks_to_datanodes_with_ids(
+                    blocks, external_block_distribution, block_ids, auth_headers
+                )
+
+                if not success:
+                    print("Error subiendo bloques")
+                    return False
 
                 print(f"Archivo {filename} subido exitosamente")
                 return True

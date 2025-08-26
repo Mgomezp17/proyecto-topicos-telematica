@@ -1,0 +1,68 @@
+services:
+  namenode:
+    build: ./namenode
+    ports:
+      - '8000:8000'
+    volumes:
+      - namenode_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/namenode.db
+      - SECRET_KEY=your-secret-key-here
+      - BLOCK_SIZE=67108864 # 64MB en bytes
+    networks:
+      - griddfs_network
+
+  datanode1:
+    build: ./datanode
+    ports:
+      - '8001:8000'
+    volumes:
+      - datanode1_data:/app/storage
+    environment:
+      - NODE_ID=datanode1
+      - NAMENODE_URL=http://namenode:8000
+      - STORAGE_PATH=/app/storage/blocks
+    depends_on:
+      - namenode
+    networks:
+      - griddfs_network
+
+  datanode2:
+    build: ./datanode
+    ports:
+      - '8002:8000'
+    volumes:
+      - datanode2_data:/app/storage
+    environment:
+      - NODE_ID=datanode2
+      - NAMENODE_URL=http://namenode:8000
+      - STORAGE_PATH=/app/storage/blocks
+    depends_on:
+      - namenode
+    networks:
+      - griddfs_network
+
+  datanode3:
+    build: ./datanode
+    ports:
+      - '8003:8000'
+    volumes:
+      - datanode3_data:/app/storage
+    environment:
+      - NODE_ID=datanode3
+      - NAMENODE_URL=http://namenode:8000
+      - STORAGE_PATH=/app/storage/blocks
+    depends_on:
+      - namenode
+    networks:
+      - griddfs_network
+
+volumes:
+  namenode_data:
+  datanode1_data:
+  datanode2_data:
+  datanode3_data:
+
+networks:
+  griddfs_network:
+    driver: bridge

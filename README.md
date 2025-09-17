@@ -31,7 +31,7 @@ GridDFS es un sistema de archivos distribuido minimalista inspirado en HDFS y GF
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Mgomezp17/proyecto-topicos-telematica
 cd griddfs
 ```
 

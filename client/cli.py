@@ -13,7 +13,7 @@ console = Console()
 
 
 @click.group()
-@click.option("--namenode", default="http://localhost:8000", help="URL del NameNode")
+@click.option("--namenode", default="http://52.87.223.92:8000", help="URL del NameNode")
 @click.pass_context
 def cli(ctx, namenode):
     """GridDFS - Sistema de archivos distribuido por bloques"""

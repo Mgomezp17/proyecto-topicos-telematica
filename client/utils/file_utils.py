@@ -120,7 +120,9 @@ class FileUtils:
                 return False
 
             # Crear directorio de salida si no existe
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            output_dir = os.path.dirname(output_path)
+            if output_dir:  # Solo crear directorio si no está vacío
+                os.makedirs(output_dir, exist_ok=True)
 
             async with httpx.AsyncClient() as client:
                 with open(output_path, "wb") as output_file:

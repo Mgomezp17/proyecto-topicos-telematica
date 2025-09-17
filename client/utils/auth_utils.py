@@ -4,7 +4,7 @@ import os
 from typing import Optional
 
 class AuthClient:
-    def __init__(self, namenode_url: str = "http://localhost:8000"):
+    def __init__(self, namenode_url: str = "http://52.87.223.92:8000"):
         self.namenode_url = namenode_url
         self.token = None
         self.token_file = os.path.expanduser("~/.griddfs_token")
@@ -42,7 +42,7 @@ class AuthClient:
     async def register(self, username: str, email: str, password: str) -> bool:
         """Registra un nuevo usuario"""
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(
                     f"{self.namenode_url}/auth/register",
                     json={
@@ -65,13 +65,14 @@ class AuthClient:
     async def login(self, username: str, password: str) -> bool:
         """Inicia sesión y obtiene un token"""
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(
                     f"{self.namenode_url}/auth/login",
-                    data={
+                    data={  # Cambiado de json= a data=
                         "username": username,
                         "password": password
-                    }
+                    },
+                    headers={"Content-Type": "application/x-www-form-urlencoded"}
                 )
                 
                 if response.status_code == 200:
@@ -100,7 +101,7 @@ class AuthClient:
             return None
         
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.get(
                     f"{self.namenode_url}/auth/me",
                     headers={"Authorization": f"Bearer {self.token}"}

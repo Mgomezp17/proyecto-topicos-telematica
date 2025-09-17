@@ -7,7 +7,7 @@ from utils.file_utils import FileUtils
 
 
 class GridDFSClientExternal:
-    def __init__(self, namenode_url: str = "http://localhost:8000"):
+    def __init__(self, namenode_url: str = "http://52.87.223.92:8000"):
         self.namenode_url = namenode_url
         self.auth_client = AuthClient(namenode_url)
 
@@ -78,11 +78,11 @@ class GridDFSClientExternal:
                     external_block_info = block_info.copy()
                     # Convertir datanode1:8000 a localhost:8001, etc.
                     if "datanode1" in block_info["datanode_url"]:
-                        external_block_info["datanode_url"] = "http://localhost:8001"
+                        external_block_info["datanode_url"] = "http://35.175.174.41:8000"
                     elif "datanode2" in block_info["datanode_url"]:
-                        external_block_info["datanode_url"] = "http://localhost:8002"
+                        external_block_info["datanode_url"] = "http://98.84.187.189:8000"
                     elif "datanode3" in block_info["datanode_url"]:
-                        external_block_info["datanode_url"] = "http://localhost:8003"
+                        external_block_info["datanode_url"] = "http://34.228.6.193:8000"
                     external_block_distribution.append(external_block_info)
 
                 # Registrar bloques en el NameNode primero para obtener los IDs
@@ -186,11 +186,11 @@ class GridDFSClientExternal:
                 external_file_info = file_info.copy()
                 for block in external_file_info["blocks"]:
                     if "datanode1" in block["datanode_url"]:
-                        block["datanode_url"] = "http://localhost:8001"
+                        block["datanode_url"] = "http://35.175.174.41:8000"
                     elif "datanode2" in block["datanode_url"]:
-                        block["datanode_url"] = "http://localhost:8002"
+                        block["datanode_url"] = "http://98.84.187.189:8000"
                     elif "datanode3" in block["datanode_url"]:
-                        block["datanode_url"] = "http://localhost:8003"
+                        block["datanode_url"] = "http://34.228.6.193:8000"
 
                 # Descargar bloques y reconstruir archivo
                 success = await FileUtils.download_blocks_from_datanodes(
